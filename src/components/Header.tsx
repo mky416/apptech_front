@@ -13,22 +13,8 @@ export default function Header() {
                         style={{ maxHeight: '100px' }}
                         navbarScroll
                     >
-                        <Nav.Link href="/">Home</Nav.Link>
-                        <Nav.Link href="/AppPage">목록</Nav.Link>
-                        <Nav.Link href="/RankingPage">랭킹</Nav.Link>
-                        <NavDropdown title="Link" id="navbarScrollingDropdown">
-                            <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                            <NavDropdown.Item href="#action4">
-                                Another action
-                            </NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action5">
-                                Something else here
-                            </NavDropdown.Item>
-                        </NavDropdown>
-                        <Nav.Link href="#" disabled>
-                            Link
-                        </Nav.Link>
+                        <Nav.Link href="#action1">목록</Nav.Link>
+                        <Nav.Link href="#action2">랭킹</Nav.Link>
                     </Nav>
                     <Form className="d-flex">
                         <Form.Control
@@ -39,6 +25,13 @@ export default function Header() {
                         />
                         <Button variant="outline-success">Search</Button>
                     </Form>
+                    <Nav
+                        className="d-flex"
+                        style={{ maxHeight: '100px' }}
+                        navbarScroll
+                    >
+                        <Nav.Link href="#action1">마이페이지</Nav.Link>
+                    </Nav>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
