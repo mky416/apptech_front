@@ -5,7 +5,7 @@ export default function Header() {
     return (
         <Navbar bg="light" expand="lg">
             <Container fluid>
-                <Navbar.Brand href="#">앱테크 정보 공유 플랫폼 이름</Navbar.Brand>
+                <Navbar.Brand href="/">앱테크 정보 공유 플랫폼 이름</Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
                 <Navbar.Collapse id="navbarScroll">
                     <Nav
@@ -13,8 +13,8 @@ export default function Header() {
                         style={{ maxHeight: '100px' }}
                         navbarScroll
                     >
-                        <Nav.Link href="#action1">목록</Nav.Link>
-                        <Nav.Link href="#action2">랭킹</Nav.Link>
+                        <Nav.Link href="/">목록</Nav.Link>
+                        <Nav.Link href="/RankingPage">랭킹</Nav.Link>
                     </Nav>
                     <Form className="d-flex">
                         <Form.Control
