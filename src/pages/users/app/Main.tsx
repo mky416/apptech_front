@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { Container, Row, Card, Button } from 'react-bootstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
@@ -27,13 +28,13 @@ const Main = (): JSX.Element => {
     function getAppList(): void {
         console.log("getAppList(" + radioValue + ", 12, " + page.current + ")")
         axios.get("/app/list",
-                {   params: {
-                        orderBy: radioValue,
-                        limit: 12,
-                        page: page.current
-                    }
+            {   params: {
+                    orderBy: radioValue,
+                    limit: 12,
+                    page: page.current
                 }
-            )
+            }
+        )
             .then((r)=>{
                 setAppList((prevData) => [...prevData, ...r.data]);
                 setHasNextPage(r.data.length === 12);
@@ -76,11 +77,11 @@ const Main = (): JSX.Element => {
                             <ToggleButton key='2' type="radio" variant="outline-success" name="radio" value= "CreatedAt"
                                           checked = {radioValue === 'CreatedAt'}
                                           onClick={(e) => {
-                                                page.current = 0;
-                                                setRadioValue('CreatedAt');
-                                                setAppList([]);
-                                                getAppList();}
-                                            }
+                                              page.current = 0;
+                                              setRadioValue('CreatedAt');
+                                              setAppList([]);
+                                              getAppList();}
+                                          }
                             >등록순</ToggleButton>
                         </ButtonGroup>
                     </div>
@@ -93,9 +94,13 @@ const Main = (): JSX.Element => {
                     {appList && appList.map(app => {
                         return(
                             <div className="col-3" key={radioValue+ " "+app.id}>
-                                <Card style={{ height: '12rem' }}>
-                                    <Card.Body>{app.appName}</Card.Body>
-                                </Card>
+                                <Link to={"/AppPage"} state={{appId: app.id, appName: app.appName}}>
+                                    <Card style={{ height: '12rem' }}>
+                                        <Card.Body>
+                                            <Card.Title>{app.appName}</Card.Title>
+                                        </Card.Body>
+                                    </Card>
+                                </Link>
                             </div>
                         );
                     })}
