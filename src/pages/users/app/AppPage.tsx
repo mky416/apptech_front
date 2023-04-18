@@ -1,78 +1,47 @@
-import React, {useEffect, useState} from 'react';
-import { useLocation } from "react-router-dom";
-import { Card, Container, Row, Tab, Tabs} from "react-bootstrap";
-import Header from '../../../components/Header';
-import axios from 'axios';
+import React from 'react';
+import {Button, Container, Form, Nav, Navbar, NavDropdown} from "react-bootstrap";
 
-interface reviewType  {
-    id: number;
-    appId: number;
-    userId: number;
-    rate: number;
-    review: string;
-};
 
 const AppPage = (): JSX.Element => {
-    const location = useLocation();
-    const appId = location.state.appId;
-    const appName = location.state.appName;
-    const [reviewList, setReviewList] = useState<reviewType[]>([]);
-    //const [key, setKey] = useState<string>('home');
-    useEffect(() => {
-        axios.get("/review/get2ReviewList",
-            {   params: {
-                    appId: appId
-                }
-            }
-        )
-        .then((r)=>{
-            setReviewList(r.data);
-        })
-        .catch((e)=> {
-            console.log(e);
-        })
-    }, []);
     return (
-        <div>
-            <Header/>
+        <Navbar bg="light" expand="lg">
             <Container fluid>
-                <h1>{appName}</h1>
-                <Row id={"reviewListCard"}>
-                    {reviewList && reviewList.length > 0 ? reviewList.map(review => {
-                        return(
-                            <div className="col-6" key={review.id}>
-                                <Card style={{ height: '6rem' }}>
-                                    <Card.Body>
-                                        <Card.Title>별점 : {review.rate}</Card.Title>
-                                        <Card.Text>{review.review}</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            </div>
-                        );
-                    })
-                    : (<div>첫 번째 리뷰를 남겨주세요!</div>)
-                    }
-                </Row>
-                <Row>
-                    <Tabs
-                        id="controlled-tab-example"
-                        //activeKey={key}
-                        //onSelect={(k) => setKey(k)}
-                        className="mb-3"
+                <Navbar.Brand href="#">앱테크 정보 공유 플랫폼 이름</Navbar.Brand>
+                <Navbar.Toggle aria-controls="navbarScroll" />
+                <Navbar.Collapse id="navbarScroll">
+                    <Nav
+                        className="me-auto my-2 my-lg-0"
+                        style={{ maxHeight: '100px' }}
+                        navbarScroll
                     >
-                        <Tab eventKey="home" title="Home">
-                            <div>abcde</div>
-                        </Tab>
-                        <Tab eventKey="profile" title="Profile">
-                            <div>abcde33</div>
-                        </Tab>
-                        <Tab eventKey="contact" title="Contact">
-                            <div>abcde33</div>
-                        </Tab>
-                    </Tabs>
-                </Row>
+                        <Nav.Link href="#action1">Home</Nav.Link>
+                        <Nav.Link href="#action2">Link</Nav.Link>
+                        <NavDropdown title="Link" id="navbarScrollingDropdown">
+                            <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
+                            <NavDropdown.Item href="#action4">
+                                Another action
+                            </NavDropdown.Item>
+                            <NavDropdown.Divider />
+                            <NavDropdown.Item href="#action5">
+                                Something else here
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                        <Nav.Link href="#" disabled>
+                            Link
+                        </Nav.Link>
+                    </Nav>
+                    <Form className="d-flex">
+                        <Form.Control
+                            type="search"
+                            placeholder="Search"
+                            className="me-2"
+                            aria-label="Search"
+                        />
+                        <Button variant="outline-success">Search</Button>
+                    </Form>
+                </Navbar.Collapse>
             </Container>
-        </div>
+        </Navbar>
     )
 }
 

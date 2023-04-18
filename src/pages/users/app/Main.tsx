@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { Link } from "react-router-dom";
 import axios from "axios";
-import { Container, Row, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
@@ -94,13 +93,9 @@ const Main = (): JSX.Element => {
                     {appList && appList.map(app => {
                         return(
                             <div className="col-3" key={radioValue+ " "+app.id}>
-                                <Link to={"/AppPage"} state={{appId: app.id, appName: app.appName}}>
-                                    <Card style={{ height: '12rem' }}>
-                                        <Card.Body>
-                                            <Card.Title>{app.appName}</Card.Title>
-                                        </Card.Body>
-                                    </Card>
-                                </Link>
+                                <Card style={{ height: '12rem' }}>
+                                    <Card.Body>{app.appName}</Card.Body>
+                                </Card>
                             </div>
                         );
                     })}
