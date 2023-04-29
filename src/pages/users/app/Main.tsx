@@ -26,7 +26,7 @@ const Main = (): JSX.Element => {
     const boxRef = useRef<HTMLDivElement>(null);
 
     function getAppList(): void {
-        console.log("getAppList(" + radioValue + ", 12, " + page.current + ")")
+        //console.log("getAppList(" + radioValue + ", 12, " + page.current + ")")
         axios.get("/app/list",
             {   params: {
                     orderBy: radioValue,
@@ -59,37 +59,32 @@ const Main = (): JSX.Element => {
         }
     }, [getAppList, hasNextPage]);
     return (
-        <div>
+        <>
             <Header/>
             <Container fluid>
-                <Row>
-                    <div className="col-2">
-                        <ButtonGroup>
-                            <ToggleButton key='1' type="radio" variant="outline-success" name="radio" value="AppName"
-                                          checked = {radioValue === 'AppName'}
-                                          onClick={(e) => {
-                                              page.current = 0;
-                                              setRadioValue('AppName');
-                                              setAppList([]);
-                                              getAppList();}
-                                          }
-                            >이름순</ToggleButton>
-                            <ToggleButton key='2' type="radio" variant="outline-success" name="radio" value= "CreatedAt"
-                                          checked = {radioValue === 'CreatedAt'}
-                                          onClick={(e) => {
-                                              page.current = 0;
-                                              setRadioValue('CreatedAt');
-                                              setAppList([]);
-                                              getAppList();}
-                                          }
-                            >등록순</ToggleButton>
-                        </ButtonGroup>
-                    </div>
-                    <div className="col-9"></div>
-                    <div className="col-1">
-                        <Button variant="success" style={{width: '100%'}}>등록</Button>{' '}
-                    </div>
-                </Row>
+                <div>
+                    <ButtonGroup>
+                        <ToggleButton key='1' type="radio" variant="outline-success" name="radio" value="AppName"
+                                      checked = {radioValue === 'AppName'}
+                                      onClick={(e) => {
+                                          page.current = 0;
+                                          setRadioValue('AppName');
+                                          setAppList([]);
+                                          getAppList();}
+                                      }
+                        >이름순</ToggleButton>
+                        <ToggleButton key='2' type="radio" variant="outline-success" name="radio" value= "CreatedAt"
+                                      checked = {radioValue === 'CreatedAt'}
+                                      onClick={(e) => {
+                                          page.current = 0;
+                                          setRadioValue('CreatedAt');
+                                          setAppList([]);
+                                          getAppList();}
+                                      }
+                        >등록순</ToggleButton>
+                    </ButtonGroup>
+                    <Button variant="success" href={'/AppRegister'} className={"float-end"}>등록</Button>{' '}
+                </div>
                 <Row id={"appListCard"}>
                     {appList && appList.map(app => {
                         return(
@@ -107,7 +102,7 @@ const Main = (): JSX.Element => {
                 </Row>
                 <div ref={boxRef} style={{height: '1rem'}}></div>
             </Container>
-        </div>
+        </>
     )
 }
 

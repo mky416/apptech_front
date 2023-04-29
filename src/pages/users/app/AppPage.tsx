@@ -33,11 +33,11 @@ const AppPage = (): JSX.Element => {
             })
     }, []);
     return (
-        <div>
+        <>
             <Header/>
             <Container fluid>
                 <h1>{appName}</h1>
-                <Row id={"reviewListCard"}>
+                <div id={"reviewListCard"}>
                     {reviewList && reviewList.length > 0 ? reviewList.map(review => {
                             return(
                                 <div className="col-6" key={review.id}>
@@ -52,8 +52,8 @@ const AppPage = (): JSX.Element => {
                         })
                         : (<div>첫 번째 리뷰를 남겨주세요!</div>)
                     }
-                </Row>
-                <Row>
+                </div>
+                <div>
                     <Tabs
                         id="controlled-tab-example"
                         //activeKey={key}
@@ -70,9 +70,9 @@ const AppPage = (): JSX.Element => {
                             <div>abcde33</div>
                         </Tab>
                     </Tabs>
-                </Row>
+                </div>
             </Container>
-        </div>
+        </>
     )
 }
 
