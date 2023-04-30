@@ -25,12 +25,13 @@ const AppPage = (): JSX.Element => {
                 }
             }
         )
-            .then((r)=>{
-                setReviewList(r.data);
-            })
-            .catch((e)=> {
-                console.log(e);
-            })
+        .then((r)=>{
+            console.log(r);
+            setReviewList(r.data);
+        })
+        .catch((e)=> {
+            console.log(e);
+        })
     }, []);
     return (
         <>

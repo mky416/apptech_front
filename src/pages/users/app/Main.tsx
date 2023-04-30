@@ -35,16 +35,16 @@ const Main = (): JSX.Element => {
                 }
             }
         )
-            .then((r)=>{
-                setAppList((prevData) => [...prevData, ...r.data]);
-                setHasNextPage(r.data.length === 12);
-                if(r.data.length){
-                    page.current += 1;
-                }
-            })
-            .catch((e)=> {
-                console.log(e);
-            })
+        .then((r)=>{
+            setAppList((prevData) => [...prevData, ...r.data]);
+            setHasNextPage(r.data.length === 12);
+            if(r.data.length){
+                page.current += 1;
+            }
+        })
+        .catch((e)=> {
+            console.log(e);
+        })
     }
     useEffect(() => {
         if(!boxRef.current || !hasNextPage) return;
