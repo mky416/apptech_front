@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import Image from 'react-bootstrap/Image';
 import Header from '../../../components/Header';
 import axios from 'axios';
@@ -12,9 +12,10 @@ interface Apptech {
     appLogoFile: string;
     appIosLink: string;
     appAndroidLink: string;
-    Profits: Profit[];
+    profitArray: Profit[];
 }
 interface Profit {
+    appId: string;
     userId: string;
     profitName: string;
     profitDesc: string;
@@ -25,29 +26,46 @@ interface Profit {
 const AppRegister = (): JSX.Element => {
     const location = useLocation();
 
-    const profitList0 = [{userId: '', profitName: '', profitDesc:'', orderNo: 1, quizYn: ''}];
-    const [profitList, setProfitList] = useState<Profit[]>(profitList0);
-    const profitCnt = useRef<number>(1);
-
     function addProfit(): void {
-        profitCnt.current += 1;
-        const newProfit = {userId: '', profitName: '', profitDesc:'', orderNo: profitCnt.current, quizYn: ''};
-        setProfitList((current) => [...current, newProfit]);
+        append({appId: '', userId: '', profitName: '', profitDesc:'', orderNo: 0, quizYn: ''})
     }
-    function deleteProfit(orderNo: number): void {
-        setProfitList(profitList.filter(profit => profit.orderNo !== orderNo));
+    function deleteProfit(index: number): void {
+        remove(index);
     }
-    const { register, handleSubmit } = useForm<Apptech>();
+    const { register, handleSubmit, control, watch} = useForm<Apptech>();
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "profitArray"
+    })
     const onSubmit: SubmitHandler<Apptech> = data => {
-        console.log(data);
-        axios.post("http://localhost:8080/app", {
-            userId: 0,
-            appName: data.appName,
-            appLogoFile: data.appLogoFile,
-            appIosLink: data.appIosLink
-        })
+        //console.log(data);
+        axios.post("http://localhost:8080/app/", //app 등록
+            data,
+            { headers: {
+                "Content-Type": "multipart/form-data",
+                "Access-Control-Allow-Origin": "*"
+            }}
+        )
         .then((r)=>{
             console.log(r);
+            //app 등록 성공시 profit 등록
+            var appId0 = r.data.id;
+            var profitArray1: Profit[] = data.profitArray;
+
+            profitArray1.map(e => e.appId = appId0);
+            profitArray1.map(e => e.userId = "0");
+            axios.post("http://localhost:8080/profit/",
+                profitArray1,
+                { headers: {
+                        "Access-Control-Allow-Origin": "*"
+                }}
+            )
+            .then((r)=>{
+                console.log(r);
+            })
+            .catch((e)=> {
+                console.log(e);
+            })
         })
         .catch((e)=> {
             console.log(e);
@@ -63,13 +81,13 @@ const AppRegister = (): JSX.Element => {
                             <Image src={"/"}></Image>
                             <Form.Group controlId="formAppLogoFile">
                                 <Form.Label>앱테크 로고</Form.Label>
-                                <Form.Control type="file" {...register("appLogoFile")}/>
+                                <Form.Control type="file" {...register("appLogoFile", { required: true })}/>
                             </Form.Group>
                         </div>
                         <div className={"col-9"}>
                             <Form.Group className="mb-3" controlId="formAppName">
                                 <Form.Label>앱테크 이름</Form.Label>
-                                <Form.Control type="text" placeholder="" {...register("appName", { required: true })}/>
+                            <Form.Control type="text" placeholder="" {...register("appName", { required: true })}/>
                             </Form.Group>
 
                             <Form.Group className="mb-3" controlId="formIosLink">
@@ -80,32 +98,37 @@ const AppRegister = (): JSX.Element => {
                                     android: ~~~
                                 </Form.Text>
                             </Form.Group>
+                            <Form.Group controlId="formUserId">
+                                <Form.Control type="hidden" placeholder="" {...register("userId")} value={"0"}/>
+                            </Form.Group>
                             <Button variant="light" onClick={() => addProfit()}>+</Button>{' 수익 방안 추가'}
                         </div>
                     </Row>
                     <div id={"profitList"}>
-                        {profitList && profitList.map(profit => {
-                            const orderNo = profit.orderNo;
+                        {fields && fields.map((profit, index) => {
                             return(
-                                <div key={orderNo}>
-                                    <Button variant="light" onClick={() => deleteProfit(orderNo)}>-</Button>
+                                <div key={index}>
+                                    <Button variant="light" onClick={() => deleteProfit(index)}>-</Button>
                                     <Form.Group as={Row} className="mb-3" controlId="formProfitName">
                                         <Form.Label column sm={2}>수익방안</Form.Label>
                                         <Col sm={10}>
-                                            <Form.Control type="text" placeholder="" {...register(`Profits.${orderNo}.profitName`, { required: true })}/>
+                                            <Form.Control type="text" placeholder="" {...register(`profitArray.${index}.profitName`, { required: true })}/>
                                         </Col>
                                     </Form.Group>
                                     <Form.Group as={Row} className="mb-3" controlId="formProfitDesc">
                                         <Form.Label column sm={2}>설명</Form.Label>
                                         <Col sm={10}>
-                                            <Form.Control as="textarea" rows={3} {...register(`Profits.${orderNo}.profitDesc`, { required: true })}/>
+                                            <Form.Control as="textarea" rows={3} {...register(`profitArray.${index}.profitDesc`, { required: true })}/>
                                         </Col>
                                     </Form.Group>
                                     <Form.Group as={Row} className="mb-3" controlId="formQuizYn">
                                         <Form.Label column sm={2}>퀴즈유무</Form.Label>
                                         <Col sm={10}>
-                                            <Form.Check type="checkbox" label="" {...register(`Profits.${orderNo}.quizYn`)}/>
+                                            <Form.Check type="checkbox" label="" {...register(`profitArray.${index}.quizYn`)}/>
                                         </Col>
+                                    </Form.Group>
+                                    <Form.Group controlId="formOrderNo">
+                                        <Form.Control type="hidden" placeholder="" {...register(`profitArray.${index}.orderNo`)} value={index}/>
                                     </Form.Group>
                                 </div>
                             );
