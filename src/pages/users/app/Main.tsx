@@ -19,14 +19,12 @@ interface appType  {
 const Main = (): JSX.Element => {
 
     const [radioValue, setRadioValue] = useState<string>("AppName");
-
     const [appList, setAppList] = useState<appType[]>([]);
-    const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+    const [isLast, setIsLast] = useState<boolean>(false);
     const page = useRef<number>(0);
     const boxRef = useRef<HTMLDivElement>(null);
 
     function getAppList(): void {
-        //console.log("getAppList(" + radioValue + ", 12, " + page.current + ")")
         axios.get("/app/list",
             {   params: {
                     orderBy: radioValue,
@@ -36,9 +34,9 @@ const Main = (): JSX.Element => {
             }
         )
         .then((r)=>{
-            setAppList((prevData) => [...prevData, ...r.data]);
-            setHasNextPage(r.data.length === 12);
-            if(r.data.length){
+            setAppList((prevData) => [...prevData, ...r.data.content]);
+            setIsLast(r.data.last);
+            if(r.data.number < r.data.totalPages){
                 page.current += 1;
             }
         })
@@ -47,7 +45,7 @@ const Main = (): JSX.Element => {
         })
     }
     useEffect(() => {
-        if(!boxRef.current || !hasNextPage) return;
+        if(!boxRef.current || isLast) return;
         const io = new IntersectionObserver((entries, observer)=> {
             if(entries[0].isIntersecting) {
                 getAppList();
@@ -57,7 +55,7 @@ const Main = (): JSX.Element => {
         return () => {
             io.disconnect();
         }
-    }, [getAppList, hasNextPage]);
+    }, [getAppList, isLast]);
     return (
         <>
             <Header/>
