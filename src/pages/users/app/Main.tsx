@@ -88,11 +88,12 @@ const Main = (): JSX.Element => {
                 <Row id={"appListCard"}>
                     {appList && appList.map(app => {
                         return(
-                            <div className="col-3" key={radioValue+ " "+app.id}>
+                            <div className="col-lg-2 col-md-3" key={radioValue+ " "+app.id}>
                                 <Link to={"/AppPage"} state={{appId: app.id, appName: app.appName}}>
-                                    <Card style={{ height: '12rem' }}>
+                                    <Card>
                                         <Card.Body>
                                             <Card.Title>{app.appName}</Card.Title>
+                                            <Card.Img src={"http://localhost:8080/image/logo?appId="+ app.id} />
                                         </Card.Body>
                                     </Card>
                                 </Link>

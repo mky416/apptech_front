@@ -10,6 +10,8 @@ interface Apptech {
     userId: string;
     appName: string;
     appLogoFile: string;
+    appLink: string;
+    appOS: string;
     appIosLink: string;
     appAndroidLink: string;
     profitArray: Profit[];
@@ -38,13 +40,19 @@ const AppRegister = (): JSX.Element => {
         name: "profitArray"
     })
     const onSubmit: SubmitHandler<Apptech> = data => {
-        //console.log(data);
+        if(data.appOS == "Android"){
+            data.appAndroidLink = data.appLink;
+        }else if(data.appOS = "IOS"){
+            data.appIosLink = data.appLink;
+        }
         axios.post("http://localhost:8080/app/", //app 등록
             data,
-            { headers: {
-                "Content-Type": "multipart/form-data",
-                "Access-Control-Allow-Origin": "*"
-            }}
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            }
         )
         .then((r)=>{
             console.log(r);
@@ -57,7 +65,7 @@ const AppRegister = (): JSX.Element => {
             axios.post("http://localhost:8080/profit/",
                 profitArray1,
                 { headers: {
-                        "Access-Control-Allow-Origin": "*"
+                    "Access-Control-Allow-Origin": "*"
                 }}
             )
             .then((r)=>{
@@ -78,7 +86,6 @@ const AppRegister = (): JSX.Element => {
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Row>
                         <div className={"col-3"}>
-                            <Image src={"/"}></Image>
                             <Form.Group controlId="formAppLogoFile">
                                 <Form.Label>앱테크 로고</Form.Label>
                                 <Form.Control type="file" {...register("appLogoFile", { required: true })}/>
@@ -92,7 +99,11 @@ const AppRegister = (): JSX.Element => {
 
                             <Form.Group className="mb-3" controlId="formIosLink">
                                 <Form.Label>앱테크 링크</Form.Label>
-                                <Form.Control type="text" placeholder="" {...register("appIosLink")}/>
+                                <Form.Control type="text" placeholder="" {...register("appLink")}/>
+                                <div key={`inline-radio`}>
+                                    <Form.Check inline type="radio" label="Android" value={"Android"} {...register("appOS", { required: true })}/>
+                                    <Form.Check inline type="radio" label="IOS" value={"IOS"}  {...register("appOS", { required: true })}/>
+                                </div>
                                 <Form.Text className="text-muted">
                                     ios: 앱 메인 페이지에서 아이콘 클릭 후 '링크 복사하기' 클릭 <br/>
                                     android: ~~~
