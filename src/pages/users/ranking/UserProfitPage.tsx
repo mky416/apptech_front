@@ -1,39 +1,32 @@
-import React from 'react';
-import {Button, Col, Container, Form, Nav, Navbar, NavDropdown, Row} from "react-bootstrap";
+import React, {useState} from 'react';
+import Header from '../../../components/Header';
+import UserProfitForm, {ProfitFormData} from '../../../components/ranking/UserProfitForm'
+import {Container, Row} from "react-bootstrap";
+
+const initialProfitData = {
+    userId: 0,
+    appId: 0,
+    profitDate: 20220301,
+    profit: 0,
+    profitImageFile: null
+}
 
 const UserProfitPage = (): JSX.Element => {
+    const [profitData, setProfitData] = useState<ProfitFormData>(initialProfitData);
+
+    const onSubmit = async (submitData: ProfitFormData) => {
+        const addForm = new FormData();
+    };
+
     return (
-        <Container fluid>
-            <Form>
-                <Form.Group as={Row} className="mb-3" controlId="formUserName">
-                    <Form.Label column sm="2">
-                        사용자 명
-                    </Form.Label>
-                    <Col sm="10">
-                        <Form.Control plaintext readOnly defaultValue="닉네임" />
-                    </Col>
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formName">
-                    <Form.Label>앱 테크 명</Form.Label>
-                    <Form.Control type="text" placeholder="Enter 앱 테크 이름" />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formProfit">
-                    <Form.Label>수익</Form.Label>
-                    <Form.Control type="email" placeholder="Enter 수익입력" />
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="formDate">
-                    <Form.Label>날짜</Form.Label>
-                    <Form.Control type="email" placeholder="Enter 날짜 입력" />
-                </Form.Group>
-                <Form.Group controlId="formFileMultiple" className="mb-3">
-                    <Form.Label>수익 캡쳐 화면 첨부</Form.Label>
-                    <Form.Control type="file"/>
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    등록
-                </Button>
-            </Form>
-        </Container>
+        <>
+            <Header/>
+            <Container fluid>
+                <Row className="m-4">
+                    <UserProfitForm onSubmit={onSubmit} editMode={true} profitData ={profitData} />
+                </Row>
+            </Container>
+        </>
     )
 }
 
