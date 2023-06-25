@@ -7,6 +7,11 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import Header from "../../../components/Header";
 
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../../modules';
+import { increase, decrease, increaseBy } from '../../../modules/counter';
+import Counter from '../../../components/Counter';
+
 interface appType  {
     id: number;
     appName: string;
@@ -56,9 +61,31 @@ const Main = (): JSX.Element => {
             io.disconnect();
         }
     }, [getAppList, isLast]);
+
+    const count = useSelector((state: RootState) => state.counter.count);
+    const dispatch = useDispatch(); // 디스패치 함수를 가져옵니다
+    const onIncrease = () => {
+        dispatch(increase());
+    };
+
+    const onDecrease = () => {
+        dispatch(decrease());
+    };
+
+    const onIncreaseBy = (diff: number) => {
+        dispatch(increaseBy(diff));
+    };
+
+    
     return (
         <>
             <Header/>
+            <Counter
+                count={count}
+                onIncrease={onIncrease}
+                onDecrease={onDecrease}
+                onIncreaseBy={onIncreaseBy}
+            />
             <Container fluid>
                 <div>
                     <ButtonGroup>
