@@ -9,8 +9,8 @@ import Header from "../../../components/Header";
 
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../modules';
-import { increase, decrease, increaseBy } from '../../../modules/counter';
-import Counter from '../../../components/Counter';
+import { login, logout } from '../../../modules/loginstatus';
+import LoginStatus from '../../../components/LoginStatus';
 
 interface appType  {
     id: number;
@@ -62,29 +62,23 @@ const Main = (): JSX.Element => {
         }
     }, [getAppList, isLast]);
 
-    const count = useSelector((state: RootState) => state.counter.count);
+    const loginStatus = useSelector((state: RootState) => state.loginstatus.loginStatus);
     const dispatch = useDispatch(); // 디스패치 함수를 가져옵니다
-    const onIncrease = () => {
-        dispatch(increase());
+    const onlogin = () => {
+        dispatch(login());
     };
 
-    const onDecrease = () => {
-        dispatch(decrease());
+    const onlogout = () => {
+        dispatch(logout());
     };
 
-    const onIncreaseBy = (diff: number) => {
-        dispatch(increaseBy(diff));
-    };
-
-    
     return (
         <>
             <Header/>
-            <Counter
-                count={count}
-                onIncrease={onIncrease}
-                onDecrease={onDecrease}
-                onIncreaseBy={onIncreaseBy}
+            <LoginStatus
+                loginstatus={loginStatus}
+                login={onlogin}
+                logout={onlogout}
             />
             <Container fluid>
                 <div>

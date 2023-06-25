@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Card, Container, Row, Tab, Table, Tabs} from "react-bootstrap";
 import Header from '../../../components/Header';
 import axios from 'axios';
@@ -120,6 +120,11 @@ const AppPage = (): JSX.Element => {
                     {' '}{appName}
                 </h2>
                 <h4>평점: {average} / 평가하기: ☆☆☆☆☆</h4>
+                <h6>
+                    {reviewList && reviewList.length > 0 ?
+                        (<Link to={"/ReviewPage"} state={{appId: appId, appName: appName}}>더 보기</Link>)
+                        : ''}
+                </h6>
                 <Row id={"reviewListCard"}>
                     {reviewList && reviewList.length > 0 ? reviewList.map(review => {
                             return(
