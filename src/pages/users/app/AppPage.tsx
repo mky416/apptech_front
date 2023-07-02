@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Link, useLocation } from "react-router-dom";
-import { Card, Container, Row, Tab, Table, Tabs} from "react-bootstrap";
+import { Card, Container, Row, Tab, Table, Tabs, Button, Form, Modal} from "react-bootstrap";
+import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import Header from '../../../components/Header';
 import axios from 'axios';
 
@@ -14,7 +15,9 @@ interface UserType {
 }
 interface reviewType {
     id: number;
+    appId: number;
     app: appType;
+    userId: number;
     user: UserType;
     rate: number;
     review: string;
@@ -39,10 +42,16 @@ const AppPage = (): JSX.Element => {
     const appId = location.state.appId;
     const appName = location.state.appName;
     const [average, setAverage] = useState<number>(0);
+    const [myReviewRate, setMyReviewRate] = useState<number>(0);
     const [reviewList, setReviewList] = useState<reviewType[]>([]);
     const [profitList, setProfitList] = useState<profitType[]>([]);
     const [quizList, setQuizList] = useState<quizType[]>([]);
-    //const [key, setKey] = useState<string>('home');
+
+    const [reviewModalshow, setReviewModalShow] = useState(false);
+
+    const modalClose = () => setReviewModalShow(false);
+    const modalShow = () => setReviewModalShow(true);
+
     useEffect(() => {
         axios.get("/review/getAverageByAppId",
             {   params: {
@@ -56,7 +65,22 @@ const AppPage = (): JSX.Element => {
         })
         .catch((e)=> {
             console.log(e);
-        })
+        });
+        
+        axios.get("/review/getRateByAppIdAndUserId",
+            {   params: {
+                    appId: appId,
+                    userId: 0
+                }
+            }
+        )
+            .then((r)=>{
+                //console.log(r);
+                setMyReviewRate(r.data);
+            })
+            .catch((e)=> {
+                console.log(e);
+            })
 
         axios.get("/review/get2ReviewList",
             {   params: {
@@ -86,6 +110,29 @@ const AppPage = (): JSX.Element => {
             console.log(e);
         })
     }, []);
+    function openReviewPopup(star: number):void{
+        setMyReviewRate(star);
+        modalShow();
+    }
+    const { register, handleSubmit, control, watch} = useForm<reviewType>();
+    const onSubmit: SubmitHandler<reviewType> = data => {
+        console.log(data);
+        axios.post("http://localhost:8080/review/addReview", //app 등록
+            data,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            }
+        )
+        .then((r)=>{
+            console.log(r);
+        })
+        .catch((e)=> {
+            console.log(e);
+        })
+    };
     function star(reviewRate: number): string{
         var starStr = "";
         for(let i=0; i<reviewRate; i++){
@@ -119,12 +166,14 @@ const AppPage = (): JSX.Element => {
                     <img src={"http://localhost:8080/image/logo?appId="+ appId} style={{height: '6rem'}}></img>
                     {' '}{appName}
                 </h2>
-                <h4>평점: {average} / 평가하기: ☆☆☆☆☆</h4>
-                <h6>
-                    {reviewList && reviewList.length > 0 ?
-                        (<Link to={"/ReviewPage"} state={{appId: appId, appName: appName}}>더 보기</Link>)
-                        : ''}
-                </h6>
+                <h4>평점: {average} / 평가하기:
+                    <span onClick={(e) => {openReviewPopup(1);}}>{myReviewRate >= 1 ? '★': '☆'}</span>
+                    <span onClick={(e) => {openReviewPopup(2);}}>{myReviewRate >= 2 ? '★': '☆'}</span>
+                    <span onClick={(e) => {openReviewPopup(3);}}>{myReviewRate >= 3 ? '★': '☆'}</span>
+                    <span onClick={(e) => {openReviewPopup(4);}}>{myReviewRate >= 4 ? '★': '☆'}</span>
+                    <span onClick={(e) => {openReviewPopup(5);}}>{myReviewRate >= 5 ? '★': '☆'}</span>
+                </h4>
+
                 <Row id={"reviewListCard"}>
                     {reviewList && reviewList.length > 0 ? reviewList.map(review => {
                             return(
@@ -141,6 +190,11 @@ const AppPage = (): JSX.Element => {
                         : (<div>첫 번째 리뷰를 남겨주세요!</div>)
                     }
                 </Row>
+                <h6>
+                    {reviewList && reviewList.length > 0 ?
+                        (<Link to={"/ReviewPage"} state={{appId: appId, appName: appName}}>더 보기</Link>)
+                        : ''}
+                </h6>
                 <div>
                     <Tabs
                         id="controlled-tab-example"
@@ -166,6 +220,37 @@ const AppPage = (): JSX.Element => {
                     </Tabs>
                 </div>
             </Container>
+
+            <Modal show={reviewModalshow} onHide={modalClose}>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{star(myReviewRate)}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                            <Form.Group className="mb-3" controlId="formReviewText">
+                                <Form.Label>평가를 남겨주세요</Form.Label>
+                                <Form.Control as="textarea" rows={3} placeholder="" {...register("review")}/>
+                            </Form.Group>
+                            <Form.Group controlId="formReviewRate">
+                                <Form.Control type="hidden" placeholder="" {...register("rate")} value={myReviewRate}/>
+                            </Form.Group>
+                            <Form.Group controlId="formUserId">
+                                <Form.Control type="hidden" placeholder="" {...register("userId")} value={"0"}/>
+                            </Form.Group>
+                            <Form.Group controlId="formAppId">
+                                <Form.Control type="hidden" placeholder="" {...register("appId")} value={appId}/>
+                            </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={modalClose}>
+                            닫기
+                        </Button>
+                        <Button variant="primary" type="submit" >
+                            평가하기
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
         </>
     )
 }
