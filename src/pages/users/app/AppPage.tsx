@@ -4,6 +4,7 @@ import { Card, Container, Row, Tab, Table, Tabs, Button, Form, Modal} from "reac
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import Header from '../../../components/Header';
 import axios from 'axios';
+import AppPageQuizTab from './AppPageQuizTab'
 
 interface appType  {
     id: number;
@@ -29,13 +30,6 @@ interface profitType {
     orderNo: number;
     quizYn: boolean;
 }
-interface quizType {
-    id: number;
-    user: UserType;
-    quizDate: string;
-    quiz: string;
-    answer: string;
-}
 
 const AppPage = (): JSX.Element => {
     const location = useLocation();
@@ -45,7 +39,6 @@ const AppPage = (): JSX.Element => {
     const [myReviewRate, setMyReviewRate] = useState<number>(0);
     const [reviewList, setReviewList] = useState<reviewType[]>([]);
     const [profitList, setProfitList] = useState<profitType[]>([]);
-    const [quizList, setQuizList] = useState<quizType[]>([]);
 
     const [reviewModalshow, setReviewModalShow] = useState(false);
 
@@ -144,19 +137,7 @@ const AppPage = (): JSX.Element => {
         return starStr;
     }
     function setTab(profitId: any): void{
-        axios.get("/quiz/getQuizList",
-            {   params: {
-                    profitId: profitId
-                }
-            }
-        )
-        .then((r)=>{
-            //console.log(r);
-            setQuizList(r.data);
-        })
-        .catch((e)=> {
-            console.log(e);
-        })
+
     }
     return (
         <>
@@ -199,24 +180,30 @@ const AppPage = (): JSX.Element => {
                     <Tabs
                         id="controlled-tab-example"
                         //activeKey={key}
-                        onSelect={(k) => setTab(k)}
+                        //onSelect={(k) => setTab(k)}
                         className="mb-3"
                     >
-                        {profitList && profitList.map(profit => {
-                            return(
-                                <Tab eventKey={profit.id} 
-                                     title={profit.profitName} 
-                                     key={profit.id} >
-                                    <h6>{profit.profitDesc}</h6>
-                                    <Table striped bordered hover>
-                                        <tbody>
-                                            <tr>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </Tab>
-                            );
+                        {profitList && profitList.filter((profit) => profit.quizYn == true) //퀴즈 있음
+                            .map(profit => {
+                                return(
+                                    <Tab eventKey={profit.id}
+                                         title={profit.profitName}
+                                         key={profit.id} >
+                                        <h6>{profit.profitDesc}</h6>
+                                        <AppPageQuizTab profitId={profit.id}/>
+                                    </Tab>
+                                );
                         })}
+                        {profitList && profitList.filter((profit) => profit.quizYn == false) //퀴즈 없음
+                            .map(profit => {
+                                return(
+                                    <Tab eventKey={profit.id}
+                                         title={profit.profitName}
+                                         key={profit.id} >
+                                        <h6>{profit.profitDesc}</h6>
+                                    </Tab>
+                                );
+                            })}
                     </Tabs>
                 </div>
             </Container>
