@@ -9,6 +9,7 @@ import axios from 'axios';
 
 interface quizType {
     id: number;
+    appProfitId:number;
     userId: number;
     userName: string;
     quiz: string;
@@ -18,7 +19,7 @@ interface quizType {
 }
 
 const AppPageQuizTab = (props: any): JSX.Element => {
-    const profitId = props.profitId;
+    const appProfitId = props.profitId;
 
     const [radioValue, setRadioValue] = useState<string>("Accuracy");
     const [quizList, setQuizList] = useState<quizType[]>([]);
@@ -29,9 +30,30 @@ const AppPageQuizTab = (props: any): JSX.Element => {
     const { register, handleSubmit, control, watch} = useForm<quizType>();
 
     useEffect(() => {
+        getQuizList();
+    }, []);
+    const onSubmit: SubmitHandler<quizType> = data => {
+        axios.post("http://localhost:8080/quiz/",
+            data,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            }
+        )
+        .then((r)=>{
+            console.log(r);
+            getQuizList();
+        })
+        .catch((e)=> {
+            console.log(e);
+        })
+    };
+    function getQuizList():void{
         axios.get("/quiz/getQuizList",
             {   params: {
-                    profitId: profitId,
+                    profitId: appProfitId,
                     date: today.getFullYear() + ("0" + (1 + today.getMonth())).slice(-2) + ("0" + today.getDate()).slice(-2)
                 }
             }
@@ -43,10 +65,51 @@ const AppPageQuizTab = (props: any): JSX.Element => {
         .catch((e)=> {
             console.log(e);
         })
-    }, []);
-    const onSubmit: SubmitHandler<quizType> = data => {
-        alert(data);
-    };
+    }
+    function clickCorrect(appProfitQuizId: number):void{
+        axios.post("http://localhost:8080/quizcorrect/",
+            {
+                appProfitQuizId: appProfitQuizId,
+                userId: 0,
+                correctStatus: 'YES'
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            }
+        )
+        .then((r)=>{
+            console.log(r);
+            getQuizList();
+        })
+        .catch((e)=> {
+            console.log(e);
+        })
+    }
+    function clickInCorrect(appProfitQuizId: number): void{
+        axios.post("http://localhost:8080/quizcorrect/",
+            {
+                appProfitQuizId: appProfitQuizId,
+                userId: 0,
+                correctStatus: 'NO'
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            }
+        )
+            .then((r)=>{
+                console.log(r);
+                getQuizList();
+            })
+            .catch((e)=> {
+                console.log(e);
+            })
+    }
     return (
         <>
             <h5>{todayStr}</h5>
@@ -82,7 +145,8 @@ const AppPageQuizTab = (props: any): JSX.Element => {
                                 <td>{quiz.userName}</td>
                                 <td>{quiz.quiz}</td>
                                 <td>{quiz.answer}</td>
-                                <td>맞아요 {quiz.yesCnt} 틀려요 {quiz.noCnt}</td>
+                                <td><span onClick={(e) => {clickCorrect(quiz.id);}}>맞아요</span> {quiz.yesCnt}
+                                    <span onClick={(e) => {clickInCorrect(quiz.id);}}> 틀려요</span> {quiz.noCnt}</td>
                             </tr>
                         );
                     })}
@@ -100,6 +164,18 @@ const AppPageQuizTab = (props: any): JSX.Element => {
                             <Form.Control type="text" placeholder="답을 입력해주세요" {...register("answer", { required: true })}/>
                         </Form.Group>
                     </div>
+                    <Form.Group controlId="formAppProfitId">
+                        <Form.Control type="hidden" placeholder="" {...register("appProfitId")} value={appProfitId}/>
+                    </Form.Group>
+                    <Form.Group controlId="formUserId">
+                        <Form.Control type="hidden" placeholder="" {...register("userId")} value={"0"}/>
+                    </Form.Group>
+                    <Form.Group controlId="formYesCnt">
+                        <Form.Control type="hidden" placeholder="" {...register("yesCnt")} value={"0"}/>
+                    </Form.Group>
+                    <Form.Group controlId="formNoCnt">
+                        <Form.Control type="hidden" placeholder="" {...register("noCnt")} value={"0"}/>
+                    </Form.Group>
                     <div className={"col-2"}>
                         <Button variant="success" type="submit">Submit</Button>
 

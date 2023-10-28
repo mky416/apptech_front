@@ -67,13 +67,13 @@ const AppPage = (): JSX.Element => {
                 }
             }
         )
-            .then((r)=>{
-                //console.log(r);
-                setMyReviewRate(r.data);
-            })
-            .catch((e)=> {
-                console.log(e);
-            })
+        .then((r)=>{
+            //console.log(r);
+            setMyReviewRate(r.data);
+        })
+        .catch((e)=> {
+            console.log(e);
+        })
 
         axios.get("/review/get2ReviewList",
             {   params: {
