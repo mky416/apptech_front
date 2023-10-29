@@ -5,6 +5,7 @@ import {Container, Row} from "react-bootstrap";
 
 const initialProfitData = {
     userId: 0,
+    username: '',
     appId: 0,
     profitDate: 20220301,
     profit: 0,

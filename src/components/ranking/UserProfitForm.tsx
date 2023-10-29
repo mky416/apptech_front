@@ -8,6 +8,7 @@ const { Formik } = formik;
 
 export interface ProfitFormData{
     userId: number;
+    username: string;
     appId: number;
     profitDate: number;
     profit: number;
@@ -45,13 +46,13 @@ const UserProfitForm = (
     return (
         <Formik
             validationSchema={schema}
-            onSubmit={console.log}
+            onSubmit={onSubmit}
             initialValues={{
                 userId: 1,
                 username: 'tester',
                 appId: 1,
                 appName: '토스',
-                profitDate: '',
+                profitDate: 0,
                 profit: 0,
                 profitImageFile: null
             }}
@@ -122,9 +123,6 @@ const UserProfitForm = (
                                 onChange={handleChange}
                                 isInvalid={!!errors.profitImageFile}
                             />
-                            <Form.Control.Feedback type="invalid" tooltip>
-                                {errors.username}
-                            </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
 
