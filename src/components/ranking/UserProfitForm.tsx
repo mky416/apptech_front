@@ -37,7 +37,6 @@ interface EditFormData {
     editMode: true;
 }
 
-
 const UserProfitForm = (
     props: UserProfitFormProps & (RegisterFormData | EditFormData),
 ) =>{
@@ -81,9 +80,9 @@ const UserProfitForm = (
                             <Form.Select
                                 name="appName"
                                 onChange={handleChange}
-                                defaultValue="토스...">
-                                <option>토스...</option>
-                                <option>신한...</option>
+                                defaultValue="토스">
+                                <option>토스</option>
+                                <option>신한</option>
                             </Form.Select>
                         </Col>
                     </Form.Group>
@@ -131,7 +130,7 @@ const UserProfitForm = (
 
                     <Form.Group as={Row} className="mb-3">
                         <Col sm={{ span: 10, offset: 2 }}>
-                            <Button type="submit">Sign in</Button>
+                            <Button type="submit">등록</Button>
                         </Col>
                     </Form.Group>
                 </Form>
