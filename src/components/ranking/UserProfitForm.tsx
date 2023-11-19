@@ -8,6 +8,7 @@ const { Formik } = formik;
 
 export interface ProfitFormData{
     userId: number;
+    username: string;
     appId: number;
     profitDate: number;
     profit: number;
@@ -37,7 +38,6 @@ interface EditFormData {
     editMode: true;
 }
 
-
 const UserProfitForm = (
     props: UserProfitFormProps & (RegisterFormData | EditFormData),
 ) =>{
@@ -46,13 +46,13 @@ const UserProfitForm = (
     return (
         <Formik
             validationSchema={schema}
-            onSubmit={console.log}
+            onSubmit={onSubmit}
             initialValues={{
                 userId: 1,
                 username: 'tester',
                 appId: 1,
                 appName: '토스',
-                profitDate: '',
+                profitDate: 0,
                 profit: 0,
                 profitImageFile: null
             }}
@@ -81,9 +81,9 @@ const UserProfitForm = (
                             <Form.Select
                                 name="appName"
                                 onChange={handleChange}
-                                defaultValue="토스...">
-                                <option>토스...</option>
-                                <option>신한...</option>
+                                defaultValue="토스">
+                                <option>토스</option>
+                                <option>신한</option>
                             </Form.Select>
                         </Col>
                     </Form.Group>
@@ -123,15 +123,12 @@ const UserProfitForm = (
                                 onChange={handleChange}
                                 isInvalid={!!errors.profitImageFile}
                             />
-                            <Form.Control.Feedback type="invalid" tooltip>
-                                {errors.username}
-                            </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-3">
                         <Col sm={{ span: 10, offset: 2 }}>
-                            <Button type="submit">Sign in</Button>
+                            <Button type="submit">등록</Button>
                         </Col>
                     </Form.Group>
                 </Form>
