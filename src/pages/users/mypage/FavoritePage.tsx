@@ -18,6 +18,7 @@ interface Profit {
     orderNo: number;
     quizYn: boolean;
 };
+
 interface ProfitFavorite {
     id: number;
     profit: Profit;
@@ -125,7 +126,7 @@ const FavoritePage = (): JSX.Element => {
                             return(
                                 <div key={profitFavorite.id}>
                                     <h3>
-                                        {profitFavorite.profit.app.appName} {'>'} {profitFavorite.profit.profitName}
+                                        {profitFavorite.profit.app.appName} {'>'} {profitFavorite.profit.profitName} {' '}
                                         <span onClick={(e) => {deleteProfitFavoriteById(profitFavorite.id);}}>♥</span>
                                     </h3>
 
