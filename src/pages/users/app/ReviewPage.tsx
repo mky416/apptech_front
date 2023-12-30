@@ -7,18 +7,11 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import Header from "../../../components/Header";
 
-interface appType  {
-    id: number;
-    appName: string;
-};
-interface UserType {
-    id: number;
-    nickname: string;
-}
 interface reviewType {
     id: number;
-    app: appType;
-    user: UserType;
+    appId: number;
+    nickname: string;
+    userId: number;
     rate: number;
     review: string;
 };
@@ -64,7 +57,7 @@ const ReviewPage = (): JSX.Element => {
                                 <div className="col-sm-12 col-md-6" key={review.id}>
                                     <Card style={{ height: '6rem' }}>
                                         <Card.Body>
-                                            <Card.Title>{review.user.nickname}{' '}{star(review.rate)}</Card.Title>
+                                            <Card.Title>{review.nickname}{' '}{star(review.rate)}</Card.Title>
                                             <Card.Text>{review.review}</Card.Text>
                                         </Card.Body>
                                     </Card>
