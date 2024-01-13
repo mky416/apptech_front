@@ -6,20 +6,11 @@ import Header from '../../../components/Header';
 import axios from 'axios';
 import AppPageQuizTab from './AppPageQuizTab'
 
-interface appType  {
-    id: number;
-    appName: string;
-};
-interface UserType {
-    id: number;
-    nickname: string;
-}
 interface reviewType {
     id: number;
     appId: number;
-    app: appType;
+    nickname: string;
     userId: number;
-    user: UserType;
     rate: number;
     review: string;
 };
@@ -35,6 +26,7 @@ const AppPage = (): JSX.Element => {
     const location = useLocation();
     const appId = location.state.appId;
     const appName = location.state.appName;
+    const userId = 0;
     const [average, setAverage] = useState<number>(0);
     const [myReviewRate, setMyReviewRate] = useState<number>(0);
     const [reviewList, setReviewList] = useState<reviewType[]>([]);
@@ -46,48 +38,7 @@ const AppPage = (): JSX.Element => {
     const modalShow = () => setReviewModalShow(true);
 
     useEffect(() => {
-        axios.get("/review/getAverageByAppId",
-            {   params: {
-                    appId: appId
-                }
-            }
-        )
-        .then((r)=>{
-            //console.log(r);
-            setAverage(r.data);
-        })
-        .catch((e)=> {
-            console.log(e);
-        });
-        
-        axios.get("/review/getRateByAppIdAndUserId",
-            {   params: {
-                    appId: appId,
-                    userId: 0
-                }
-            }
-        )
-        .then((r)=>{
-            //console.log(r);
-            setMyReviewRate(r.data);
-        })
-        .catch((e)=> {
-            console.log(e);
-        })
-
-        axios.get("/review/get2ReviewList",
-            {   params: {
-                    appId: appId
-                }
-            }
-        )
-        .then((r)=>{
-            //console.log(r);
-            setReviewList(r.data);
-        })
-        .catch((e)=> {
-            console.log(e);
-        })
+        getReview();
 
         axios.get("/profit/getProfitList",
             {   params: {
@@ -110,7 +61,7 @@ const AppPage = (): JSX.Element => {
     const { register, handleSubmit, control, watch} = useForm<reviewType>();
     const onSubmit: SubmitHandler<reviewType> = data => {
         console.log(data);
-        axios.post("http://localhost:8080/review/addReview", //app 등록
+        axios.post("http://localhost:8080/review/" + data.appId + "/rate", //app 등록
             data,
             {
                 headers: {
@@ -121,11 +72,52 @@ const AppPage = (): JSX.Element => {
         )
         .then((r)=>{
             console.log(r);
+            modalClose();
+            getReview();
+        })
+        .catch((e)=> {
+            console.log(e);
+            modalClose();
+            getReview();
+        })
+    }
+    function getReview(): void{
+        axios.get("/review/" + appId + "/rate")
+        .then((r)=>{
+            setAverage(r.data);
+        })
+        .catch((e)=> {
+            console.log(e);
+        });
+        axios.get("/review/getRateByAppIdAndUserId",
+            {   params: {
+                    appId: appId,
+                    userId: userId
+                }
+            }
+        )
+        .then((r)=>{
+            console.log(r);
+            setMyReviewRate(r.data);
         })
         .catch((e)=> {
             console.log(e);
         })
-    };
+
+        axios.get("/review/get2ReviewList",
+            {   params: {
+                    appId: appId
+                }
+            }
+        )
+        .then((r)=>{
+            console.log(r);
+            setReviewList(r.data);
+        })
+        .catch((e)=> {
+            console.log(e);
+        });
+    }
     function star(reviewRate: number): string{
         var starStr = "";
         for(let i=0; i<reviewRate; i++){
@@ -135,9 +127,6 @@ const AppPage = (): JSX.Element => {
             starStr += "☆";
         }
         return starStr;
-    }
-    function setTab(profitId: any): void{
-
     }
     return (
         <>
@@ -161,7 +150,7 @@ const AppPage = (): JSX.Element => {
                                 <div className="col-6" key={review.id}>
                                     <Card style={{ height: '6rem' }}>
                                         <Card.Body>
-                                            <Card.Title>{review.user.nickname}{' '}{star(review.rate)}</Card.Title>
+                                            <Card.Title>{review.nickname}{' '}{star(review.rate)}</Card.Title>
                                             <Card.Text>{review.review}</Card.Text>
                                         </Card.Body>
                                     </Card>
