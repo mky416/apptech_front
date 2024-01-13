@@ -15,6 +15,10 @@ export default function Header() {
                     >
                         <Nav.Link href="/">목록</Nav.Link>
                         <Nav.Link href="/RankingPage">랭킹</Nav.Link>
+                        <NavDropdown title="마이페이지" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#action/3.1">회원 정보</NavDropdown.Item>
+                            <NavDropdown.Item href="/Favorite">퀴즈 모아보기</NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
                     <Form className="d-flex">
                         <Form.Control
@@ -25,13 +29,6 @@ export default function Header() {
                         />
                         <Button variant="outline-success">Search</Button>
                     </Form>
-                    <Nav
-                        className="d-flex"
-                        style={{ maxHeight: '100px' }}
-                        navbarScroll
-                    >
-                        <Nav.Link href="#action1">마이페이지</Nav.Link>
-                    </Nav>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

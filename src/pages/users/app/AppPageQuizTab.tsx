@@ -20,9 +20,11 @@ interface quizType {
 
 const AppPageQuizTab = (props: any): JSX.Element => {
     const appProfitId = props.profitId;
+    const userId = 0;
 
     const [radioValue, setRadioValue] = useState<string>("Accuracy");
     const [quizList, setQuizList] = useState<quizType[]>([]);
+    const [profitFavorite, setProfitFavorite] = useState<boolean>(false);
     
     const today = new Date();
     const todayStr = today.getFullYear() +'년 ' + (today.getMonth()+1) + '월 ' + today.getDate() +'일 퀴즈';
@@ -31,6 +33,7 @@ const AppPageQuizTab = (props: any): JSX.Element => {
 
     useEffect(() => {
         getQuizList();
+        getProfitFavorite();
     }, []);
     const onSubmit: SubmitHandler<quizType> = data => {
         axios.post("http://localhost:8080/quiz/",
@@ -70,7 +73,7 @@ const AppPageQuizTab = (props: any): JSX.Element => {
         axios.post("http://localhost:8080/quizcorrect/",
             {
                 appProfitQuizId: appProfitQuizId,
-                userId: 0,
+                userId: userId,
                 correctStatus: 'YES'
             },
             {
@@ -92,7 +95,7 @@ const AppPageQuizTab = (props: any): JSX.Element => {
         axios.post("http://localhost:8080/quizcorrect/",
             {
                 appProfitQuizId: appProfitQuizId,
-                userId: 0,
+                userId: userId,
                 correctStatus: 'NO'
             },
             {
@@ -102,17 +105,70 @@ const AppPageQuizTab = (props: any): JSX.Element => {
                 }
             }
         )
+        .then((r)=>{
+            console.log(r);
+            getQuizList();
+        })
+        .catch((e)=> {
+            console.log(e);
+        })
+    }
+
+    function getProfitFavorite(): void{
+        axios.get("/profitFavorite/getProfitFavorite",
+            {   params: {
+                    appProfitId: appProfitId,
+                    userId: userId
+                }
+            }
+        )
+        .then((r)=>{
+            console.log(r);
+            setProfitFavorite(r.data);
+        })
+        .catch((e)=> {
+            console.log(e);
+        });
+    }
+    function clickProfitFavorite(profitFavorite0: boolean): void{
+        if(profitFavorite0){
+            axios.delete("http://localhost:8080/profitFavorite/deleteProfitFavoriteByProfitIdAndUserId/"
+                + appProfitId + "/" + userId
+            )
             .then((r)=>{
                 console.log(r);
-                getQuizList();
+                getProfitFavorite();
             })
             .catch((e)=> {
                 console.log(e);
             })
+        }else{
+            axios.post("http://localhost:8080/profitFavorite/",
+                {
+                    profitId: appProfitId,
+                    userId: userId
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "*"
+                    }
+                }
+            )
+            .then((r)=>{
+                console.log(r);
+                getProfitFavorite();
+            })
+            .catch((e)=> {
+                console.log(e);
+            })
+        }
     }
     return (
         <>
-            <h5>{todayStr}</h5>
+            <h5>{todayStr}
+                <span onClick={(e) => {clickProfitFavorite(profitFavorite);}}>{profitFavorite ? '♥': '♡'}</span>
+            </h5>
             <ButtonGroup>
                 <ToggleButton key='1' type="radio" variant="outline-success" name="radio" value="Accuracy"
                               checked = {radioValue === 'Accuracy'}

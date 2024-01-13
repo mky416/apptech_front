@@ -6,6 +6,7 @@ import AppRegister from "../pages/users/app/AppRegister";
 import Main from "../pages/users/app/Main";
 import RankingPage from "../pages/users/ranking/RankingPage";
 import UserProfitPage from "../pages/users/ranking/UserProfitPage";
+import FavoritePage from "../pages/users/mypage/FavoritePage";
 
 const Router = (props: any) => {
     return (
@@ -16,6 +17,7 @@ const Router = (props: any) => {
             <Route path='/AppRegister' element={<AppRegister />} />
             <Route path='/RankingPage' element={<RankingPage />} />
             <Route path="/RankingPage/Profit" element={ <UserProfitPage />} />
+            <Route path="/Favorite" element={ <FavoritePage />} />
         </Routes>
     );
 };
