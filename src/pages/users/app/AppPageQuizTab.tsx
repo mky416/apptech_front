@@ -56,6 +56,7 @@ const AppPageQuizTab = (props: any): JSX.Element => {
     function getQuizList():void{
         axios.get("/quiz/getQuizList",
             {   params: {
+                    orderBy: radioValue,
                     profitId: appProfitId,
                     date: today.getFullYear() + ("0" + (1 + today.getMonth())).slice(-2) + ("0" + today.getDate()).slice(-2)
                 }
