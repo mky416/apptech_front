@@ -47,7 +47,6 @@ const AppPage = (): JSX.Element => {
             }
         )
         .then((r)=>{
-            //console.log(r);
             setProfitList(r.data);
         })
         .catch((e)=> {
