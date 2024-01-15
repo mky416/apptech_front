@@ -7,11 +7,6 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import Header from "../../../components/Header";
 
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../modules';
-import { login, logout } from '../../../modules/loginstatus';
-import LoginStatus from '../../../components/LoginStatus';
-
 interface appType  {
     id: number;
     appName: string;
@@ -62,24 +57,9 @@ const Main = (): JSX.Element => {
         }
     }, [getAppList, isLast]);
 
-    const loginStatus = useSelector((state: RootState) => state.loginstatus.loginStatus);
-    const dispatch = useDispatch(); // 디스패치 함수를 가져옵니다
-    const onlogin = () => {
-        dispatch(login());
-    };
-
-    const onlogout = () => {
-        dispatch(logout());
-    };
-
     return (
         <>
             <Header/>
-            <LoginStatus
-                loginstatus={loginStatus}
-                login={onlogin}
-                logout={onlogout}
-            />
             <Container fluid>
                 <div>
                     <ButtonGroup>

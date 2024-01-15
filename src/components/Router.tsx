@@ -7,11 +7,13 @@ import Main from "../pages/users/app/Main";
 import RankingPage from "../pages/users/ranking/RankingPage";
 import UserProfitPage from "../pages/users/ranking/UserProfitPage";
 import FavoritePage from "../pages/users/mypage/FavoritePage";
+import LoginPage from "../pages/users/login/LoginPage";
 
 const Router = (props: any) => {
     return (
         <Routes>
             <Route path='/' element={<Main />} />
+            <Route path='/Login' element={<LoginPage />} />
             <Route path='/AppPage' element={<AppPage />} />
             <Route path='/ReviewPage' element={<ReviewPage />} />
             <Route path='/AppRegister' element={<AppRegister />} />
