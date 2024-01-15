@@ -40,7 +40,7 @@ const LoginPage = (): JSX.Element => {
         )
         .then((r) => {
             console.log(r.data);
-            if(r.data != -1){ //로그인 성공
+            if(r.data){ //로그인 성공
                 onlogin(r.data);
                 navigate("/");
             }else{
